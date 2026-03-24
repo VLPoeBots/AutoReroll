@@ -8,7 +8,7 @@
     "asar": true,
     "publish": {
       "provider": "github",
-      "owner": "Frosttide",
+      "owner": "VLFrosttide",
       "repo": "AutoReroll"
     },
     "asarUnpack": "renderer/SaveIconPics",
