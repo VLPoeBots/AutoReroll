@@ -1,4 +1,6 @@
+//#region imports
 import path from "path";
+import dotenv from "dotenv";
 import fs from "fs";
 import pkg from "electron-updater";
 const { autoUpdater } = pkg;
@@ -31,6 +33,7 @@ import "./HelperFunctionsBackend/Craft.js";
 import "./HelperFunctionsBackend/ExportFile.js";
 import "./HelperFunctionsBackend/UseCurrency.js";
 nativeTheme.themeSource = "dark";
+//#endregion
 //
 //
 //
@@ -43,16 +46,44 @@ autoUpdater.checkForUpdatesAndNotify();
 //
 //
 //
-let win;
-let LogFilePath;
+export let DocPath;
+export let ExePath;
+export let LiftKeysPath;
+export let LogFilePath;
+export let RerollPath;
+export let HarvestRerollPath;
+export let AlchScourPath;
+export let RerollFolder;
+let win; 
 let ScreenRatio;
 let NewMenuTemplate;
 let CaptureMouseEvent = new EventEmitter();
 let MousePosition;
-let ExePath = app.getPath("exe");
+ExePath = app.getPath("exe");
 ExePath = ExePath.substring(0, ExePath.lastIndexOf("\\"));
 let PreloadPath = path.join(app.getAppPath(), "/renderer/preload.js");
-//awdawdawdad
+//
+if (LocalDev === "Dev") {
+  dotenv.config();
+  DocPath = process.env.DocPath;
+  RerollFolder = process.env.RerollFolder;
+  LogFilePath = process.env.LogFilePath;
+  LiftKeysPath = process.env.LiftKeysPath;
+  RerollPath = process.env.RerollPath;
+  HarvestRerollPath = process.env.HarvestRerollPath;
+  AlchScourPath = process.env.AlchScourPath;
+  console.log(HarvestRerollPath)
+} else {
+  DocPath = app.getPath("documents");
+  ExePath = app.getPath("exe");
+  ExePath = ExePath.substring(0, ExePath.lastIndexOf("\\"));
+  RerollFolder = path.join(DocPath, "RerollLogs");
+  LogFilePath = path.join(RerollFolder, "/Logs.txt");
+  LiftKeysPath = path.join(ExePath, "/python/LiftKeys.py");
+  RerollPath = path.join(ExePath, "/python/Reroll.py");
+  HarvestRerollPath = path.join(ExePath, "/python/HarvestReroll.py");
+  AlchScourPath = path.join(ExePath, "/python/AlchScour.py");
+}
 const CreateWindow = () => {
   win = new BrowserWindow({
     width: 800,
@@ -90,9 +121,7 @@ app.whenReady().then(() => {
   win.ELECTRON_ENABLE_SECURITY_WARNINGS = false;
   let SaveIconsFolder;
   if (LocalDev === "Dev") {
-    SaveIconsFolder =
-      "C:\\Program Files\\AutoReroll\\resources\\app.asar.unpacked\\renderer\\SaveIconPics";
-    // win.webContents.send("GetIconPath", SaveIconsFolder);
+    SaveIconsFolder = process.env.SaveIconsFolder;
   } else {
     SaveIconsFolder = path.join(
       app.getPath("exe").replace("AutoReroll.exe", ""),
@@ -101,8 +130,6 @@ app.whenReady().then(() => {
       "renderer",
       "SaveIconPics"
     );
-
-    // win.webContents.send("GetIconPath", SaveIconsFolder);
   }
   win.webContents.on("did-finish-load", () => {
     win.webContents.send("GetIconPath", SaveIconsFolder);

@@ -1,8 +1,25 @@
 import { spawn } from "child_process";
 import { WriteToFile } from "./LogFiles.js";
-import { win } from "../main.js";
+import { win, LogFilePath } from "../main.js";
+// console.log("Write file path: ", LogFilePath);  
+/**
+ * 
+ * @param {*} ScriptPath 
+ * @param {*} MyArgs 
+ * @param {*} Counter
+ *    HarvestRerollPath[0], 
+      ModName[1], 
+      MaxRolls[2], 
+      CurrencyCoords[3],
+      TabCoords[4], 
+      CraftMaterial[5], 
+      Fracture[6], 
+      ExclusionMods[7],
+      SleepTimer[8], 
+      ModNumber[9], 
+ */
+export function StartCraft (ScriptPath, MyArgs, Counter) {
 
-export function StartCraft (ScriptPath, MyArgs) {
     const MyCraft = spawn("python", [
           ScriptPath,
           MyArgs[0], 
@@ -17,18 +34,18 @@ export function StartCraft (ScriptPath, MyArgs) {
         ]);
 
     MyCraft.stdout.on("data", (data) => {
-        HandleData(data);
+        HandleData(data, Counter);
     });
     MyCraft.stderr.on("data", (data) => {
         HandleError(data);
     });
     MyCraft.on("exit", (code, signal) => {
-        HandleExit(code, signal);
+        HandleExit(code, signal , Counter);
     });
 }
 
 
-function HandleData(data) {
+function HandleData(data, Counter) {
        let PrintThis = String(data);
       console.log(PrintThis);
       if (PrintThis.includes("MyCounter")) {
@@ -72,7 +89,7 @@ function HandleError(data) {
         win.webContents.send("ItemError", MyError);
       };}
 
-function HandleExit(code, signal) {
+function HandleExit(code, signal, Counter) {
 
       if (code !== null && code !== "0" && code !== 0) {
         console.log(`Crafting script exited with code ${code}`);

@@ -45,6 +45,9 @@ html {
 .InitiallyHidden {
   display: none;
 }
+#AlchScourGroup{
+  display: none;
+}
 ::-webkit-scrollbar {
   width: 4px;
 }

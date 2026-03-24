@@ -1,6 +1,6 @@
 "use strict";
 
-//#region Imports
+//#region Imports`
 import {
   CreateElementFn,
   DisplayInsertionMsg,
@@ -12,6 +12,7 @@ import { GetLSSaves } from "../HelperFunctionsFrontend/LocalStorageFn.js";
 import {
   LoadInitialState,
   ShowHiddenContent,
+  DisplayAlchScour
 } from "../HelperFunctionsFrontend/LoadInitialState.js";
 import { StartCrafting } from "../HelperFunctionsFrontend/StartButton.js";
 import "../HelperFunctionsFrontend/ImportItems.js";
@@ -374,6 +375,8 @@ CurrencyDiv.addEventListener("click", (e) => {
 
 StoreCoordsButton.addEventListener("click", function () {
   //Sets local storage coords for an item
+  let ScourCoords
+  let AlchCoords
   for (let i = 0; i < CoordsArray.length; i++) {
     let ItemID = CoordsArray[i].id.replace("Label", "");
     let ItemCoords = CoordsArray[i].textContent;
@@ -386,11 +389,27 @@ StoreCoordsButton.addEventListener("click", function () {
     );
     ItemCoords = [ItemXCoords, ItemYCoords];
     localStorage.setItem(`${ItemID}Coords`, `${ItemCoords}`);
+    if (ItemID === "ScourOrb") {
+    ScourCoords = ItemCoords;
+  } 
+   if (ItemID === "AlchOrb") {
+    AlchCoords = ItemCoords;
   }
+  }
+  let AlchScourGroup = document.getElementById("AlchScourGroup");
+  if(AlchCoords!==undefined && ScourCoords!==undefined){
+    let AlchScourCoords = `${AlchCoords}/${ScourCoords}`;
+    localStorage.setItem(`AlchScourCoords`, `${AlchScourCoords}`);
+    AlchScourGroup.style.display = "flex";
+  }else{
+    AlchScourGroup.style.display = "none";
+  }
+  console.log("AlchScourGroup: ", AlchScourGroup);
   StoreCoordsButton.style.display = "none";
   window.location.reload();
   ShowHiddenContent();
   LoadInitialState();
+  DisplayAlchScour();
   DisplayInsertionMsg("Items coords have been stored!", "green");
 });
 //#endregion
@@ -442,9 +461,6 @@ window.api.ClearMods((event, data) => {
 });
 //#endregion
 
-//#region Load Icons
-
-//#endregion
 //#region Escape ev.listener
 window.addEventListener("keydown", function (e) {
   if (e.key === "Escape") {
@@ -468,7 +484,6 @@ window.api.MousePos((event, data) => {
   // X/Y label for each currencyItem / essence
   if (XYLabel == undefined) {
     RemoveElementByClass("HoverTooltip");
-
     DisplayInsertionMsg("No currency selected.", "red");
   }
   if (XYLabel !== undefined && XYLabel.classList.contains("Modify")) {

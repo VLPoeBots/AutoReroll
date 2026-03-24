@@ -1,6 +1,6 @@
 {
   "name": "AutoReroll",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "Automatically rerolls items",
   "main": "main.js",
   "type": "module",
@@ -8,29 +8,11 @@
     "asar": true,
     "publish": {
       "provider": "github",
-      "owner": "VLPoeBots",
+      "owner": "Frosttide",
       "repo": "AutoReroll"
     },
     "asarUnpack": "renderer/SaveIconPics",
     "appId": "AutoReroll",
-    "extraFiles": [
-      {
-        "from": "python/Reroll.py",
-        "to": "python/Reroll.py"
-      },
-      {
-        "from": "python/HarvestReroll.py",
-        "to": "python/HarvestReroll.py"
-      },
-      {
-        "from": "python/UseCurrency.py",
-        "to": "python/UseCurrency.py"
-      },
-      {
-        "from": "python/LiftKeys.py",
-        "to": "python/LiftKeys.py"
-      }
-    ],
     "win": {
       "target": "nsis",
       "electronLanguages": [
@@ -50,6 +32,7 @@
   "files": [
     "main.js",
     "renderer/*",
+    "python/*",
     "HelperFunctionsBackend/*",
     "HelperFunctionsFrontend/*"
   ],
@@ -66,5 +49,7 @@
     "electron-builder": "^26.8.1"
   },
   "dependencies": {
-    "electron-updater": "^6.6.2"  }
+    "dotenv": "^17.3.1",
+    "electron-updater": "^6.6.2"
+  }
 }

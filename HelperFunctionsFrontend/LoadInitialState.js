@@ -1,9 +1,9 @@
 "use strict";
-import { CreateElementFn } from "./HelperFn.js";
 import { GetLSSaves } from "./LocalStorageFn.js";
 export function LoadInitialState() {
   let VisibleElements = GetLSSaves("");
   let RemoveElements = [];
+
   VisibleElements = [...Object.keys(VisibleElements)];
   for (let i = 0; i < VisibleElements.length; i++) {
     VisibleElements[i] = VisibleElements[i].replace("Coords", "");
@@ -37,7 +37,9 @@ export function LoadInitialState() {
   }
 
   for (let i = 0; i < RemoveElements.length; i++) {
-    RemoveElements[i].remove();
+    if(RemoveElements[i]){
+      RemoveElements[i].remove();
+    }
   }
   if (document.getElementsByClassName("EssenceGroup").length < 1) {
     let EssenceImage = document.getElementById("EssenceImage");
@@ -66,3 +68,17 @@ export function ShowHiddenContent() {
     HiddenElements[i].style.display = "flex";
   }
 }
+
+
+export function DisplayAlchScour() {
+  let AlchScourCoords = localStorage.getItem("AlchScourCoords");
+  console.log("AlchScourCoords: ", AlchScourCoords);
+  if(AlchScourCoords!==null && AlchScourCoords!==undefined ){
+    
+    let AlchScourGroup = document.getElementById("AlchScourGroup");
+    AlchScourGroup.style.display = "flex";
+  }
+
+
+}
+DisplayAlchScour();

@@ -1,39 +1,11 @@
 import { app, ipcMain } from "electron";
-import { win } from "../main.js";
-import path from "path";
+import { win,  LogFilePath, RerollPath, HarvestRerollPath, AlchScourPath } from "../main.js";
 import { WriteToFile } from "./LogFiles.js";
 import { StartCraft } from "./SpawnPython.js";
 
-let DocPath;
-let ExePath;
-let LogFilePath;
-let LiftKeysPath;
-let RerollPath;
-let HarvestRerollPath;
-let RerollFolder;
-let LocalDev = process.env.NODE_ENV;
+
 let Counter;
-console.log("LocalDev: ", LocalDev);
-if (LocalDev === "Dev") {
-  DocPath = "C:\\Users\\shacx";
-  RerollFolder = "C:\\Users\\shacx\\Documents\\RerollLogs";
-  LogFilePath = "C:\\Users\\shacx\\Documents\\RerollLogs\\Logs.txt";
-  LiftKeysPath =
-    "C:\\Users\\shacx\\Documents\\GitHub\\AutoReroll\\python\\LiftKeys.py";
-  RerollPath =
-    "C:\\Users\\shacx\\Documents\\GitHub\\AutoReroll\\python\\Reroll.py";
-  HarvestRerollPath =
-    "C:\\Users\\shacx\\Documents\\GitHub\\AutoReroll\\python\\HarvestReroll.py";
-} else {
-  DocPath = app.getPath("documents");
-  ExePath = app.getPath("exe");
-  ExePath = ExePath.substring(0, ExePath.lastIndexOf("\\"));
-  RerollFolder = path.join(DocPath, "RerollLogs");
-  LogFilePath = path.join(RerollFolder, "/Logs.txt");
-  LiftKeysPath = path.join(ExePath, "/python/LiftKeys.py");
-  RerollPath = path.join(ExePath, "/python/Reroll.py");
-  HarvestRerollPath = path.join(ExePath, "/python/HarvestReroll.py");
-}
+
 
 ipcMain.on("StartCrafting", (event, args) => {
   win.webContents.send("Counter", "reset");
@@ -50,11 +22,13 @@ ipcMain.on("StartCrafting", (event, args) => {
   if (ExclusionMods.length > 0) {
     WriteToFile(LogFilePath, `ExclusionMods: ${ExclusionMods}`);
   }
-  console.log("CraftMaterial: ", CraftMaterial);
+  
   if (CraftMaterial === "Harvest") {
     StartCraft(HarvestRerollPath, args);
-  } else {
-    StartCraft(RerollPath, args);
-    
+  } else if(CraftMaterial === "AlchScour") {
+    StartCraft(AlchScourPath, args, Counter);
+  }
+  else {
+    StartCraft(RerollPath, args, Counter);
   }
 });

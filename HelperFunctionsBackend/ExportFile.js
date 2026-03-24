@@ -10,7 +10,6 @@ ipcMain.on("ReturnExportData", (event, data) => {
     //Doesnt work yet !!!
 
     win.webContents.send("ExportItem", "NamingError");
-    console.log("Some error..");
   }
 });
 
