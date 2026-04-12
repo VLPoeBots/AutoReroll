@@ -25,11 +25,14 @@ SaveCraftButton.addEventListener("click", function () {
   let SavedSelectedIcon = document.getElementsByClassName("SavedSelectedIcon");
 
   // Adds / removes mods from existing saves
+  let Mods = GetCurrentItem();
+  if(Mods!== null){
+    
+  
   if (SavedSelectedIcon.length > 0) {
-    let Mods = GetCurrentItem();
     let IconName = SavedSelectedIcon[0].src.split("/").pop();
     let SelectedName = SavedSelectedIcon[0].id;
-    if (Mods[0].length > 0) {
+    if (Mods !== null) {
       let SaveString = `SaveIconName${IconName}PositiveMods${JSON.stringify(
         Mods[0]
       )}NegativeMods${JSON.stringify(Mods[1])}`;
@@ -38,10 +41,9 @@ SaveCraftButton.addEventListener("click", function () {
         "Successfully saved changes to the selected existing item",
         "green"
       );
-    } else {
-      DisplayInsertionMsg("Please select at least one positive mod", "red");
-    }
+    } 
   } else {
+    
     const SaveCraftContainer = document.getElementById("SaveCraftContainer");
     if (!SaveCraftContainer) {
       let SaveCraftContainer = CreateElementFn(
@@ -171,7 +173,9 @@ SaveCraftButton.addEventListener("click", function () {
       });
     }
   }
-});
+}else {
+      DisplayInsertionMsg("Please select at least one mod", "red");
+    }});
 //#endregion
 
 

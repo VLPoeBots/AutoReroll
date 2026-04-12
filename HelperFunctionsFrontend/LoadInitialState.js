@@ -1,5 +1,7 @@
 "use strict";
 import { GetLSSaves } from "./LocalStorageFn.js";
+import {SendInventoryImage, MapEvListener} from "./MapCoords.js"
+import {CreateCurrencyIcons} from  "./CreateCurrencyIcons.js"
 export function LoadInitialState() {
   let VisibleElements = GetLSSaves("");
   let RemoveElements = [];
@@ -11,13 +13,14 @@ export function LoadInitialState() {
       VisibleElements[i] = VisibleElements[i].replace("DeafeningEssenceOf", "");
     }
   }
-  let CurrencyGroup = [...document.getElementsByClassName("CurrencyGroup")];
-  for (let i = 0; i < CurrencyGroup.length; i++) {
-    if (CurrencyGroup[i].id.includes("Tab")) {
-      CurrencyGroup[i].remove();
+  let Currency = [...document.getElementsByClassName("Currency")];
+  for (let i = 0; i < Currency.length; i++) {
+    if (Currency[i].id.includes("Tab")) {
+      Currency[i].remove();
+      RemoveElements.push(document.getElementById(Currency[i]));
     }
-    if (CurrencyGroup[i]) {
-      let CurrentID = CurrencyGroup[i].id.replace("Group", "");
+    if (Currency[i]) {
+      let CurrentID = Currency[i].id.replace("Group", "");
       if (!CurrentID.includes("Tab")) {
         if (!VisibleElements.includes(CurrentID)) {
           RemoveElements.push(document.getElementById(CurrentID + "Group"));
@@ -30,8 +33,9 @@ export function LoadInitialState() {
   for (let i = 0; i < EssenceGroup.length; i++) {
     if (EssenceGroup[i]) {
       let CurrentID = EssenceGroup[i].id;
+      CurrentID = CurrentID.replace("Group", "");
       if (!VisibleElements.includes(CurrentID)) {
-        RemoveElements.push(document.getElementById(CurrentID));
+        RemoveElements.push(document.getElementById(CurrentID+"Group"));
       }
     }
   }
@@ -41,10 +45,10 @@ export function LoadInitialState() {
       RemoveElements[i].remove();
     }
   }
-  if (document.getElementsByClassName("EssenceGroup").length < 1) {
-    let EssenceImage = document.getElementById("EssenceImage");
-    EssenceImage.remove();
-  }
+    let Deny = Array.from(document.getElementsByClassName("DenyHover"))
+    for (let i = 0; i < Deny.length; i++) {
+        Deny[i].classList.remove("DenyHover");
+    }
   let Hover = [...document.getElementsByClassName("Hover")];
   if (Hover[0]) {
     Hover[0].classList.toggle("Hover");
@@ -57,6 +61,11 @@ export function LoadInitialState() {
   ShowHiddenContent();
   let StoreCoordsButton = document.getElementById("StoreCoordsButton");
   StoreCoordsButton.remove();
+  let MapIcon = document.getElementById("Maps");
+  if(MapIcon){
+    
+    MapIcon.removeEventListener("click", SendInventoryImage)
+  }
 }
 
 export function ShowHiddenContent() {
@@ -69,10 +78,9 @@ export function ShowHiddenContent() {
   }
 }
 
-
+// MapIcon.removeEventListener("click", SendInventoryImage)
 export function DisplayAlchScour() {
   let AlchScourCoords = localStorage.getItem("AlchScourCoords");
-  console.log("AlchScourCoords: ", AlchScourCoords);
   if(AlchScourCoords!==null && AlchScourCoords!==undefined ){
     
     let AlchScourGroup = document.getElementById("AlchScourGroup");
@@ -81,4 +89,18 @@ export function DisplayAlchScour() {
 
 
 }
+async function ExportLS(){
+  let LSValue = new Promise((resolve, reject) => {
+    resolve(GetLSSaves())
+  })
+  window.api.ExportLS(await LSValue)
+}
+CreateCurrencyIcons().then(() => {
+  MapEvListener();
+});
+ExportLS()
 DisplayAlchScour();
+if(localStorage.length > 0 ){
+  let TabCoords = document.getElementById("TabContainer");
+  TabCoords.remove()
+}

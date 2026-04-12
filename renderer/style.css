@@ -68,6 +68,7 @@ html {
 }
 #CurrencyDiv {
   display: flex;
+  padding: 1em;
 }
 .CurrencyGroup {
   display: flex;
@@ -75,6 +76,13 @@ html {
   justify-content: flex-end;
   align-items: center;
   margin: 10px;
+}
+.Currency{  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 10px;
+  padding: 5px;
 }
 #CurrencyTabItemSpot,
 #EssenceTabItemSpot {
@@ -110,6 +118,11 @@ html {
 #AutoContainer {
   display: flex;
   flex-direction: row;
+  padding: 10px;
+}
+.Currency{
+  display: flex;
+  align-items: flex-start ;
 }
 /*#endregion*/
 /*#region Images*/
@@ -119,6 +132,7 @@ html {
   width: 40px;
   object-fit: contain;
   display: flex;
+  flex-direction: column;
   border: 3px solid transparent;
   justify-content: center;
   align-items: center;
@@ -195,7 +209,7 @@ html {
 .Hover {
   border: 3px double;
   border-color: rgb(213, 9, 80);
-  color: rgb(192, 23, 23);
+  /* color: rgb(192, 23, 23); */
 
   animation: snakeBorder 100ms;
 }
@@ -210,33 +224,35 @@ html {
 }
   /*#endregion*/
 /*#region EssenceContainer*/
-.HiddenEssence {
+/* .HiddenEssence {
   display: none;
 }
   #SpecialEssenceDiv {
   display: flex;
   flex-direction: column;
   align-items: end;
+} */
+.leftEssence {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
-
 #EssenceContainer {
-  padding: 1em;
+  padding: 0.5em;
+  margin: 1em;
   display: flex;
   -webkit-user-drag: none;
   user-select: none;
-  overflow-y: auto;
+  overflow-y: scroll;
+  height: 150px;
+
 }
 
-#EssenceLeftSide {
-  border-right: 50px solid transparent;
+.EssenceGroup {
+
+  padding: 20px;
 }
-#EssenceRightSide {
-  border-left: 50px solid transparent;
-}
-.EssenceDiv {
-  display: flex;
-  flex-direction: row;
-}
+
 /*#endregion*/
 /*#region InputAnimations*/
 .Input {
@@ -269,18 +285,30 @@ html {
   bottom: 1%;
   right: 1%;
   user-select: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#MapOptionsLabel{
+  margin: auto;
+}
+
+.CraftingOptionsClass{
+  display: flex;
+  flex-direction: column;
+
 }
 .Instructions {
   text-align: center;
   user-select: none;
 }
-.HideInstructions {
-  display: flex;
-  align-items: center;
-}
+
 /*#endregion*/
 /*#region Buttons*/
 .button {
+  font-weight: bold;
+
+  cursor: pointer;
   user-select: none;
   margin: 0.5rem;
   background-image: linear-gradient(174deg, #032225, #030d15);
@@ -292,7 +320,8 @@ html {
   padding: 8px 10px; /* Add padding */
 }
 .button:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  color: #208c42;
 }
 
 /*#endregion*/
@@ -305,6 +334,7 @@ html {
 }
 .XYLabel {
   opacity: 0.2;
+  width: 50px;
 }
 #Insertion {
   display: flex;
@@ -396,4 +426,8 @@ html {
 }
 #ModNumber {
   width: 2rem;
+}
+.Break{
+  white-space: pre;
+  text-align: center;
 }

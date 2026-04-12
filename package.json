@@ -1,10 +1,12 @@
 {
   "name": "AutoReroll",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Automatically rerolls items",
   "main": "main.js",
   "type": "module",
+  
   "build": {
+    
     "asar": true,
     "publish": {
       "provider": "github",
@@ -14,8 +16,12 @@
     "asarUnpack": "renderer/SaveIconPics",
     "appId": "AutoReroll",  
     "extraFiles": [
+      {"from": "MapsRoll.py",
+       "to": "MapsRoll.py"
+      },
       {"from": "AlchScour.py",
-       "to": "AlchScour.py"},
+       "to": "AlchScour.py"
+      },
       {
         "from": "python/Reroll.py",
         "to": "python/Reroll.py"
@@ -31,6 +37,10 @@
       {
         "from": "python/LiftKeys.py",
         "to": "python/LiftKeys.py"
+      },
+         {
+        "from": "Sounds/Sound1.wav",
+        "to": "Sounds/Sound1.wav"
       }
     ],
     "win": {

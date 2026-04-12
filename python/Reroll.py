@@ -6,7 +6,8 @@ import traceback
 import re 
 Rarity = None
 Check = None
-
+for i, arg in enumerate(sys.argv):
+    print(f"{i}: {arg}")
 pyperclip.copy("")
 Orbs = {
     "OrbOfAlteration": "magic",
@@ -22,24 +23,25 @@ def CheckRarity(Mats, Rarity):
 
 
 try:
-    ModArray = sys.argv[1].split(",")
-    ExclusionModArray = sys.argv[7].split(",")
-    ExclusionModArray = [item for item in ExclusionModArray if item]
-    ExclusionModArray = [item for item in ExclusionModArray if item.strip()]
-    SleepTimer = float(sys.argv[8])
-    InitialModNumber = int(sys.argv[9])
-
-    if (sys.argv[2]==""):   
+    PMods = sys.argv[1].split(",")
+    NMods = sys.argv[2].split(",")
+    NMods = [item for item in NMods if item]
+    NMods = [item for item in NMods if item.strip()]
+    CraftMaterial = sys.argv[3]
+    InitialModNumber = int(sys.argv[4])
+    if (sys.argv[5]==""):   
         MaxRolls = 9999
     else:
-        MaxRolls = int(sys.argv[2])
-        
-    CurrencyCoords = sys.argv[3].split(",")
-    ModNums = [int(num) for s in ModArray for num in re.findall(r'\d+', s)]
-    ModName = [re.sub(r'\d+', '', s) for s in ModArray]
-    TabCoords = sys.argv[4].split(",")
-    CraftMaterial = sys.argv[5]
+        MaxRolls = int(sys.argv[5])
     Fracture = sys.argv[6]
+    SleepTimer = float(sys.argv[7])
+    CurrencyCoords = sys.argv[11].split(",")
+    TabCoords = sys.argv[12].split(",")
+
+
+        
+    ModNums = [int(num) for s in PMods for num in re.findall(r'\d+', s)]
+    ModName = [re.sub(r'\d+', '', s) for s in PMods]
     if Fracture == "false":
         Fracture = False
     CurrencyCoords = (int(CurrencyCoords[0]), int(CurrencyCoords[1]))
@@ -52,6 +54,7 @@ try:
     Counter = 0
 
     def Reroll():
+        print("DEBUG NMods at start:", NMods)
         global Counter, Check, Check_lines, ModNumber
         stop = False
         while stop == False:
@@ -80,10 +83,12 @@ try:
 
                 for name in ModName:
                     if name.strip().lower() in line:
-            
-                        if len(ExclusionModArray)>0:
+                        print(NMods)
+                        print(len(NMods))
+
+                        if len(NMods)>0:
                             Exclusion = False
-                            for ExclMod in ExclusionModArray:
+                            for ExclMod in NMods:
                                 if ExclMod in line:
                                     print("Found exclusion mod: ", line, flush=True)
                                     Exclusion = True

@@ -11,29 +11,31 @@ Check = None
 pyperclip.copy("")
 
 try:
-    ModArray = sys.argv[1].split(",")
-    ExclusionModArray = sys.argv[7].split(",")
-    ExclusionModArray = [item for item in ExclusionModArray if item]
-    ExclusionModArray = [item for item in ExclusionModArray if item.strip()]
-    SleepTimer = float(sys.argv[8])
-    InitialModNumber = int(sys.argv[9])
-
-    if (sys.argv[2]==""):   
+    PModArray = sys.argv[1].split(",")
+    NModArray = sys.argv[2].split(",")
+    NModArray = [item for item in NModArray if item]
+    NModArray = [item for item in NModArray if item.strip()]
+    CraftMaterial = sys.argv[3]
+    InitialModNumber = int(sys.argv[4])
+    if (sys.argv[5]==""):   
         MaxRolls = 9999
     else:
-        MaxRolls = int(sys.argv[2])
+        MaxRolls = int(sys.argv[5])
+    Fracture = sys.argv[6]
+    SleepTimer = float(sys.argv[7])
+    CurrencyCoords = sys.argv[11].split("/")
+    print(CurrencyCoords, flush=True)
+    TabCoords = sys.argv[12].split(",")
+
     print("InitialCoords: ", sys.argv[3])
-    CurrencyCoords = sys.argv[3].split("/")
     AlchCoords = CurrencyCoords[0].split(",")
-    AlchCoords = (int(AlchCoords[0]), int(AlchCoords[1]))
+    AlchCoords = [int(AlchCoords[0]), int(AlchCoords[1])]
     print("AlchCoords: ", AlchCoords)
     ScourCoords = CurrencyCoords[1].split(",")  
-    ScourCoords = (int(ScourCoords[0]), int(ScourCoords[1]))
+    ScourCoords = [int(ScourCoords[0]), int(ScourCoords[1])]
     print("ScourCoords: ", ScourCoords)
-    ModNums = [int(num) for s in ModArray for num in re.findall(r'\d+', s)]
-    ModName = [re.sub(r'\d+', '', s) for s in ModArray]
-    TabCoords = sys.argv[4].split(",")
-    Fracture = sys.argv[6]
+    ModNums = [int(num) for s in PModArray for num in re.findall(r'\d+', s)]
+    ModName = [re.sub(r'\d+', '', s) for s in PModArray]
     if Fracture == "false":
         Fracture = False
     TabCoords = (int(TabCoords[0]),int(TabCoords[1]))
@@ -76,9 +78,9 @@ try:
                 for name in ModName:
                     if name.strip().lower() in line:
             
-                        if len(ExclusionModArray)>0:
+                        if len(NModArray)>0:
                             Exclusion = False
-                            for ExclMod in ExclusionModArray:
+                            for ExclMod in NModArray:
                                 if ExclMod in line:
                                     print("Found exclusion mod: ", line, flush=True)
                                     Exclusion = True

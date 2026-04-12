@@ -1,36 +1,40 @@
 import { spawn } from "child_process";
 import { WriteToFile } from "./LogFiles.js";
-import { win, LogFilePath } from "../main.js";
-// console.log("Write file path: ", LogFilePath);  
+import { win, LogFilePath,LiftKeysPath, SoundMuted } from "../main.js";
+import { PlaySound } from "./Sound.js";
 /**
  * 
  * @param {*} ScriptPath 
+ * @param {*} CurrencyCoords
+ * @param {*} TabCoords
  * @param {*} MyArgs 
  * @param {*} Counter
- *    HarvestRerollPath[0], 
-      ModName[1], 
-      MaxRolls[2], 
-      CurrencyCoords[3],
-      TabCoords[4], 
-      CraftMaterial[5], 
-      Fracture[6], 
-      ExclusionMods[7],
-      SleepTimer[8], 
-      ModNumber[9], 
+ * @param {*} SoundPath
+ * @param {*} MapRollingCoords
+ *    PModArray[0],
+ *    NModArray[1],
+ *    CraftingMaterial[2],
+      MinimumNumberOfMods[3], 
+      MaximumRerolls[4], 
+      Fracture[5], 
+      Delay[6],
  */
-export function StartCraft (ScriptPath, MyArgs, Counter) {
-
-    const MyCraft = spawn("python", [
-          ScriptPath,
-          MyArgs[0], 
-          MyArgs[1], 
-          MyArgs[2], 
-          MyArgs[3], 
-          MyArgs[4], 
-          MyArgs[5], 
-          MyArgs[6], 
-          MyArgs[7], 
-          MyArgs[8], 
+export function StartCraft (ScriptPath, MyArgs, CurrencyCoords, TabCoords,  MapRollCoords, SoundPath, Counter) {
+  const MyCraft = spawn("python", [
+          ScriptPath, //0 Path to script
+          MyArgs[0], //1 PModArray
+          MyArgs[1], //2 NModArray
+          MyArgs[2], //3 CraftingMaterial <-- used for coords in other py files.
+          MyArgs[3], //4 MinimumNumberOfMods
+          MyArgs[4], //5 MaximumRerolls
+          MyArgs[5], //6 Fracture
+          MyArgs[6], //7 Delay
+          MyArgs[7], //8 WisdomScrollCheckBox
+          MyArgs[8], //9 ScourOrbCheckBox
+          MyArgs[9], //10 VaalOrbCheckBox
+          CurrencyCoords, //11
+          TabCoords, //12  
+          MapRollCoords,//13
         ]);
 
     MyCraft.stdout.on("data", (data) => {
@@ -40,7 +44,7 @@ export function StartCraft (ScriptPath, MyArgs, Counter) {
         HandleError(data);
     });
     MyCraft.on("exit", (code, signal) => {
-        HandleExit(code, signal , Counter);
+        HandleExit(code, signal , Counter, SoundPath);
     });
 }
 
@@ -89,18 +93,22 @@ function HandleError(data) {
         win.webContents.send("ItemError", MyError);
       };}
 
-function HandleExit(code, signal, Counter) {
-
-      if (code !== null && code !== "0" && code !== 0) {
-        console.log(`Crafting script exited with code ${code}`);
-        WriteToFile(LogFilePath, `Crafting script exited with code ${code}`);
-      } else if (signal !== null) {
-        console.log(`Crafting script was killed by signal ${signal}`);
-        WriteToFile(
-          LogFilePath,
-          `Crafting script was killed by signal ${signal}`
-        );
-      }
+function HandleExit(code, signal, Counter, SoundPath) {
+  LiftKeys(LiftKeysPath)
+    if(!SoundMuted){
+      if (code === 0 || code === "0") {
+        PlaySound(SoundPath);
+      }}
+    if (code !== null && code !== "0" && code !== 0) {
+      console.log(`Crafting script exited with code ${code}`);
+      WriteToFile(LogFilePath, `Crafting script exited with code ${code}`);
+    } else if (signal !== null) {
+      console.log(`Crafting script was killed by signal ${signal}`);
+      WriteToFile(
+        LogFilePath,
+        `Crafting script was killed by signal ${signal}`
+      );
+    }
       WriteToFile(LogFilePath, `Counter: ${Counter}`);
       WriteToFile(LogFilePath, "~~~~~~~~~~~~Crafting Project End~~~~~~~~~~~~}");
     }

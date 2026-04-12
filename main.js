@@ -32,16 +32,8 @@ import {
 import "./HelperFunctionsBackend/Craft.js";
 import "./HelperFunctionsBackend/ExportFile.js";
 import "./HelperFunctionsBackend/UseCurrency.js";
+import "./HelperFunctionsBackend/MapCoords.js";
 nativeTheme.themeSource = "dark";
-//#endregion
-//
-//
-let LocalDev = process.env.NODE_ENV;
-//#region AutoUpdater
-autoUpdater.checkForUpdatesAndNotify();
-//#endregion
-//
-//
 export let DocPath;
 export let ExePath;
 export let LiftKeysPath;
@@ -49,7 +41,27 @@ export let LogFilePath;
 export let RerollPath;
 export let HarvestRerollPath;
 export let AlchScourPath;
+export let MapsPath
 export let RerollFolder;
+export let SoundPath;
+export let SoundMuted;
+
+import { LSPromise } from "./HelperFunctionsBackend/LocalStorageImport.js";
+LSPromise.then((data) => {
+  if (data.length === 0) {
+    SoundMuted = false;
+  } else {
+    SoundMuted = data["SoundMuted"];
+  }
+})
+//#endregion
+//
+let LocalDev = process.env.NODE_ENV;
+//#region AutoUpdater
+autoUpdater.checkForUpdatesAndNotify();
+//#endregion
+//
+//
 let win; 
 let ScreenRatio;
 let NewMenuTemplate;
@@ -68,7 +80,9 @@ if (LocalDev === "Dev") {
   RerollPath = process.env.RerollPath;
   HarvestRerollPath = process.env.HarvestRerollPath;
   AlchScourPath = process.env.AlchScourPath;
-  console.log(HarvestRerollPath)
+  SoundPath = process.env.SoundPath;
+  MapsPath = process.env.MapsPath;
+
 } else {
   DocPath = app.getPath("documents");
   ExePath = app.getPath("exe");
@@ -79,11 +93,13 @@ if (LocalDev === "Dev") {
   RerollPath = path.join(ExePath, "/python/Reroll.py");
   HarvestRerollPath = path.join(ExePath, "/python/HarvestReroll.py");
   AlchScourPath = path.join(ExePath, "/python/AlchScour.py");
+  SoundPath = path.join(ExePath, "/Sounds/Sound1.wav");
+  MapsPath = path.join(ExePath, "/python/MapsRoll.py");
 }
 const CreateWindow = () => {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 850,
+    height: 900,
     x: 490,
     y: 0,
     title: `AutoReroll v${app.getVersion()}`,
@@ -101,9 +117,10 @@ const CreateWindow = () => {
   win.loadFile("renderer/index.html");
 };
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   globalShortcut.unregisterAll();
   CreateWindow();
+  // let LSImport = await import("./HelperFunctionsBackend/LocalStorageImport.js");
 
   let DocPath = app.getPath("documents");
   let RerollFolder = path.join(DocPath, "RerollLogs");
@@ -133,6 +150,9 @@ app.whenReady().then(() => {
 
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") app.quit();
+  });
+  let MuteSound = globalShortcut.register("Control+Shift+M", () => {
+    win.webContents.send("ToggleMute", "awd");
   });
   let OpenLogs = globalShortcut.register("F2", () => {
     try {
@@ -346,7 +366,19 @@ app.whenReady().then(() => {
           },
         },
       ],
-    },
+    },{
+      label: "Sound",
+      submenu: [
+        {
+          label: "Toggle Mute",
+          accelerator: "Control+Shift+M",
+          click() {
+            SoundMuted = !SoundMuted;
+            win.webContents.send("ToggleMute", `${SoundMuted}`);
+          },
+        },
+      ],
+    }
   ];
   const menu = Menu.buildFromTemplate(NewMenuTemplate);
   Menu.setApplicationMenu(menu);

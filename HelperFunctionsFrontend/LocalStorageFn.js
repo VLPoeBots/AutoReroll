@@ -17,10 +17,16 @@ export function GetLSSaves(Prefix) {
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     let value = localStorage.getItem(key);
-    if (value.startsWith(Prefix)) {
+    if(Prefix){
+
+      if (value.startsWith(Prefix)) {
+        Items[key] = value;
+      }
+    } else {
       Items[key] = value;
-    }
+    } 
   }
+
   return Items;
 }
 /**
@@ -89,3 +95,5 @@ export function CreateLocalStorageSave(SaveName, SaveString) {
     }
   });
 }
+
+

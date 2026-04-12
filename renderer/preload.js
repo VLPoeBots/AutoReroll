@@ -1,15 +1,8 @@
 const { ipcRenderer, contextBridge } = require("electron");
-// const { call } = require("function-bind");
-// console.log("Preload script is running");
+
 
 contextBridge.exposeInMainWorld("api", {
-  // GetIconPath: (callback) => {
-  //   console.log("Setting up IPC listener for GetIconPath");
 
-  //   ipcRenderer.on("GetIconPath", (event, data) => {
-  //     console.log("Preload received: ", data);
-  //   });
-  // },
   GetIconPath: (callback) => ipcRenderer.on("GetIconPath", callback),
   RarityError: (callback) => ipcRenderer.on("ItemError", callback),
   MousePos: (callback) => ipcRenderer.on("MouseCoords", callback),
@@ -17,6 +10,7 @@ contextBridge.exposeInMainWorld("api", {
   ClearMods: (callback) => ipcRenderer.on("ClearMods", callback),
   SaveIconsData: (callback) => ipcRenderer.on("SaveIconsData", callback), // Used to display SaveIcons on frontend
   ExportItemsListener: (callback) => ipcRenderer.on("ExportItem", callback),
+  ToggleMute: (callback) => ipcRenderer.on("ToggleMute", callback),
 
   ImportItemsListener: (callback) => ipcRenderer.on("ImportItem", callback),
   ClearLocalStorage: (callback) =>
@@ -27,6 +21,9 @@ contextBridge.exposeInMainWorld("api", {
   StartCraft: (callback) => ipcRenderer.on("StartCraft", callback),
   GlobalKey: (callback) => ipcRenderer.on("GlobalKey", callback),
   Counter: (callback) => ipcRenderer.on("Counter", callback),
+  MapCoords: (callback) => ipcRenderer.on("MapCoords", callback),
+  InventoryImage: (callback) => ipcRenderer.send("InventoryImage", callback),
+  ExportLS: (callback) => ipcRenderer.send("ExportLS", callback),
   LoadSaveIconPics: (callback) =>
     ipcRenderer.send("LoadSaveIconPics", callback),
   TriggerCurrencyUse: (callback) => {
